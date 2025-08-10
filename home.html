@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Animated Anime Scroll — Mix Vibes</title>
+
+  <!-- Google fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---------- Basic reset ---------- */
+    :root{
+      --maxw:1200px;
+      --muted:#98caec;
+      --accent:#68e0ff;
+      --text:#f6f7f8;
+      --nav-bg: rgba(3,6,12,0.44);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,"Kanit",sans-serif;background:#02030a;color:var(--text);-webkit-font-smoothing:antialiased}
+    a{color:inherit;text-decoration:none}
+
+    /* ---------- NAVBAR ---------- */
+    header.site {
+      position:fixed;left:0;right:0;top:10px;z-index:200;display:flex;justify-content:center;
+      pointer-events:auto;
+    }
+    nav.main {
+      width:100%;max-width:var(--maxw);padding:10px 18px;border-radius:12px;display:flex;align-items:center;justify-content:space-between;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border:1px solid rgba(255,255,255,0.04);
+      backdrop-filter: blur(6px); box-shadow:0 12px 40px rgba(0,0,0,0.6);
+    }
+    .brand{display:flex;gap:10px;align-items:center}
+    .brand .logo{width:44px;height:44px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#ff8bd1);display:flex;align-items:center;justify-content:center;font-weight:800;color:#031017}
+    .links{display:flex;gap:12px;align-items:center}
+    .links a{padding:8px 12px;border-radius:8px;font-weight:600;opacity:0.95;color:var(--text);transition:all .18s}
+    .links a:hover{transform:translateY(-3px);color:var(--accent)}
+    .links a.active{box-shadow:0 6px 20px rgba(97, 19, 84, 0.06);color:var(--accent)}
+
+    /* ---------- Section (tall for longer scroll) ---------- */
+    section.scene {
+      position:relative;min-height:120vh; /* longer scroll */
+      display:flex;align-items:center;justify-content:center;overflow:hidden;padding-top:64px;
+    }
+    /* background holder for GIF/MP4 */
+    .bg {
+      position:absolute;inset:0;background:center/cover no-repeat #000;z-index:0;filter:brightness(.7) saturate(1.05);
+      will-change:transform,opacity;
+    }
+    /* overlay for readability */
+    .overlay {
+      position:absolute;inset:0;background:linear-gradient(180deg, rgba(128, 32, 131, 0.15) 0%, rgba(2,6,12,0.7) 80%);z-index:1;
+    }
+    /* content */
+    .scene .content {
+      position:relative;z-index:4;max-width:var(--maxw);width:100%;padding:28px;text-align:center;color:var(--text)
+    }
+    h1.title{font-family:Kanit, sans-serif;font-size:clamp(28px,5vw,56px);margin-bottom:8px}
+    p.lead{color:var(--muted);max-width:900px;margin:auto;font-size:1.05rem}
+
+    /* small caption thumbnails row (optional images) */
+    .thumbs{display:flex;gap:12px;justify-content:center;margin-top:18px;flex-wrap:wrap}
+    .thumbs img{width:150px;height:86px;object-fit:cover;border-radius:8px;border:1px solid rgba(255,255,255,0.04);box-shadow:0 10px 30px rgba(0,0,0,0.5);cursor:pointer;transition:transform .18s}
+    .thumbs img:hover{transform:translateY(-6px) scale(1.03);}
+
+    /* reveal animation */
+    .reveal{opacity:0;transform:translateY(20px);transition:all .8s cubic-bezier(.2,.9,.2,1)}
+    .reveal.in{opacity:1;transform:translateY(0)}
+
+    /* active small-nav on side (optional) */
+    .side-indicator{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:210;display:flex;flex-direction:column;gap:8px}
+    .side-indicator button{width:10px;height:44px;border-radius:8px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.02);cursor:pointer}
+    .side-indicator button.active{background:linear-gradient(180deg,var(--accent),#ff8bd1)}
+
+    /* footer */
+    footer{padding:40px 18px;text-align:center;color:var(--muted)}
+
+    /* responsive */
+    @media (max-width:900px){
+      .thumbs img{width:110px;height:66px}
+      nav.main{padding:8px}
+    }
+    @media (max-width:640px){
+      section.scene{min-height:100vh}
+      .thumbs img{width:92px;height:56px}
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="site" role="banner">
+    <nav class="main" role="navigation" aria-label="Main">
+      <div class="brand">
+        <div class="logo">AM</div>
+        <div style="line-height:1">
+          <div style="font-weight:800">Anime<span style="color:var(--accent)">Mix</span></div>
+          <div style="font-size:12px;color:var(--muted)">scroll show</div>
+        </div>
+      </div>
+
+      <div class="links" role="menubar">
+        <a href="#home" class="navlink">Home</a>
+        <a href="#about" class="navlink">About</a>
+        <a href="#scenes" class="navlink">Scenes</a>
+        <a href="#gallery" class="navlink">Gallery</a>
+        <a href="#contact" class="navlink">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <!-- SECTION 1: HOME (GIF background from Tenor provided earlier) -->
+    <section id="home" class="scene" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-4.gif">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="overlay" aria-hidden="true"></div>
+
+      <div class="content reveal" data-reveal>
+        <h1 class="title">Enter the Anime Mix</h1>
+        <p class="lead">A cinematic scroll experience — dreamy skies, neon energy, and animated loops. Scroll down for more scenes.</p>
+
+        <div class="thumbs" aria-hidden="true">
+          <!-- clickable small images; replace URLs as needed -->
+          <img src="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-4.gif" alt="thumb1" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-4.gif">
+          <img src="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-3.gif" alt="thumb2" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-3.gif">
+          <img src="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-5.gif" alt="thumb3" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-5.gif">
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: ABOUT (another GIF) -->
+    <section id="about" class="scene" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-7.gif">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="overlay" aria-hidden="true"></div>
+
+      <div class="content reveal" data-reveal>
+        <h1 class="title">About the Mix</h1>
+        <p class="lead">This page demonstrates multiple animated backgrounds as you scroll. Replace any `data-bg` with your own GIF/MP4 link to customize.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 3: SCENES (long & cinematic) -->
+    <section id="scenes" class="scene" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-9.gif">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="overlay" aria-hidden="true"></div>
+
+      <div class="content reveal" data-reveal>
+        <h1 class="title">Scenes</h1>
+        <p class="lead">Layered visuals, looping GIFs, and subtle overlays create depth. Try tapping a thumbnail above to swap hero background quickly.</p>
+      </div>
+    </section>
+
+    <!-- SECTION 4: GALLERY (multiple images & GIFs) -->
+    <section id="gallery" class="scene" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-15.gif">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="overlay" aria-hidden="true"></div>
+
+      <div class="content reveal" data-reveal>
+        <h1 class="title">Gallery</h1>
+        <p class="lead">Example animated loops — replace these with your favorite clips to get a personal anime gallery.</p>
+
+        <div class="thumbs" style="margin-top:22px">
+          <img src="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-16.gif" alt="" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-16.gif">
+          <img src="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-17.gif" alt="" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-17.gif">
+          <img src="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-18.gif" alt="" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-18.gif">
+          <img src="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-19.gif" alt="" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-19.gif">
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: CONTACT -->
+    <section id="contact" class="scene" data-bg="https://gifsec.com/wp-content/uploads/2022/10/cute-anime-boy-20.gif">
+      <div class="bg" aria-hidden="true"></div>
+      <div class="overlay" aria-hidden="true"></div>
+
+      <div class="content reveal" data-reveal>
+        <h1 class="title">Contact</h1>
+        <p class="lead">Want custom loops or help integrating your GIFs? Drop a message. (Form below is demo-only.)</p>
+
+        <form class="thumbs" id="contactForm" style="max-width:700px;display:flex;flex-direction:column;align-items:center;">
+          <input id="name" type="text" placeholder="Your name" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);width:100%;max-width:420px;margin-bottom:8px;background:rgba(255,255,255,0.02);color:var(--text)">
+          <input id="email" type="email" placeholder="Email" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);width:100%;max-width:420px;margin-bottom:8px;background:rgba(255,255,255,0.02);color:var(--text)">
+          <textarea id="msg" placeholder="Message..." rows="4" style="padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);width:100%;max-width:420px;background:rgba(255,255,255,0.02);color:var(--text)"></textarea>
+          <button type="submit" style="padding:10px 16px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#ff7fc4);border:0;color:#04121a;font-weight:800;cursor:pointer">Send</button>
+          <div id="formStatus" style="color:var(--muted);margin-top:8px"></div>
+        </form>
+      </div>
+    </section>
+
+    <footer><div class="center" style="color:var(--muted)">© <span id="year"></span> Anime Mix — demo. Replace GIFs with your own to personalize.</div></footer>
+  </main>
+
+  <script>
+    /* ---------- Utilities ---------- */
+    const $ = s => document.querySelector(s);
+    const $$ = s => document.querySelectorAll(s);
+
+    // Set initial backgrounds from data-bg attributes
+    function setBackgrounds(){
+      document.querySelectorAll('section.scene').forEach(sec=>{
+        const url = sec.dataset.bg;
+        const bg = sec.querySelector('.bg');
+        if(url && bg){
+          // If the URL looks like mp4 -> use <video> element instead (not implemented auto-detect here)
+          bg.style.backgroundImage = `url('${url}')`;
+        }
+      });
+    }
+    setBackgrounds();
+
+    // Reveal on scroll
+    (function(){
+      const obs = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            entry.target.classList.add('in');
+          }
+        });
+      }, {threshold:0.18});
+      document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+    })();
+
+    // Navbar active link based on section in view
+    (function(){
+      const navLinks = document.querySelectorAll('.navlink');
+      const sections = Array.from(document.querySelectorAll('section.scene'));
+      const observer = new IntersectionObserver((entries)=>{
+        entries.forEach(entry=>{
+          if(entry.isIntersecting){
+            const id = entry.target.id;
+            navLinks.forEach(a=> a.classList.toggle('active', a.getAttribute('href') === `#${id}`));
+          }
+        });
+      }, {threshold:0.45});
+      sections.forEach(s=> observer.observe(s));
+    })();
+
+    // Clickable thumbnails: swap section background quickly (only changes bg image CSS)
+    (function(){
+      document.querySelectorAll('.thumbs img').forEach(img=>{
+        img.addEventListener('click', ()=>{
+          const url = img.dataset.bg;
+          if(!url) return;
+          // swap the first section (home) background for quick preview
+          const target = document.querySelector('#home .bg');
+          if(target){
+            target.style.backgroundImage = `url('${url}')`;
+          }
+        });
+      });
+    })();
+
+    // Contact form demo handler
+    (function(){
+      const form = document.getElementById('contactForm');
+      const status = document.getElementById('formStatus');
+      if(!form) return;
+      form.addEventListener('submit', (e)=>{
+        e.preventDefault();
+        status.textContent = 'Sending...';
+        setTimeout(()=>{ status.textContent = 'Message sent (demo). I will contact you soon.'; form.reset(); }, 900 + Math.random()*900);
+      });
+    })();
+
+    // Set year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Respect prefers-reduced-motion
+    (function(){
+      if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+        // stop any heavy visuals if needed; simple approach: reduce bg brightness and skip reveals
+        document.querySelectorAll('.bg').forEach(b=>b.style.filter='brightness(.9)');
+        document.querySelectorAll('.reveal').forEach(r=>r.classList.add('in'));
+      }
+    })();
+  </script>
+</body>
+</html>
